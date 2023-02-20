@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Stock extends Model
 {
     use HasFactory;
 
-    private $fillable = [
+    protected  $fillable = [
         'name',
         'quantity',
         'unit_name',
@@ -17,7 +18,12 @@ class Stock extends Model
         'stndard_quantity',
     ];
      
-    public function user()
+    /**
+     * Get the user that wrote the stock.
+     *
+     * @return  Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

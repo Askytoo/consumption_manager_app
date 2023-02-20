@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateStockRequest;
 use App\Models\Stock;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class StockController extends Controller
 {
@@ -15,7 +17,9 @@ class StockController extends Controller
      */
     public function index(): Response
     {
-        //
+        return Inertia::render('Stocks/Index', [
+            'stocks' => Auth::user()->stocks()->get(),
+        ]);
     }
 
     /**
