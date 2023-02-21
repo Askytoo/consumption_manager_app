@@ -22,7 +22,10 @@ export default function Authenticated({ auth, header, children }) {
 
                             <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                    Dashboard
+                                    { __('Dashboard') }
+                                </NavLink>
+                                <NavLink href={route('stocks.index')} active={route().current('stocks.index')}>
+                                    { __('Stocks') }
                                 </NavLink>
                             </div>
                         </div>
@@ -94,6 +97,9 @@ export default function Authenticated({ auth, header, children }) {
                     <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('stocks.index')} active={route().current('stocks.index')}>
+                            { __('Stocks') }
                         </ResponsiveNavLink>
                     </div>
 
