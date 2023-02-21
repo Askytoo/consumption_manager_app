@@ -24,7 +24,7 @@ class StockFactory extends Factory
         return [
             'id' => fake()->uuid(),
             'user_id' => $user_id,
-            'name' => fake()->text(),
+            'name' => fake()->word(),
             'category' => 1,
             'quantity' => 1,
             'unit_name' => '個',

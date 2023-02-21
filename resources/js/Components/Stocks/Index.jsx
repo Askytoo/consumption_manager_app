@@ -1,6 +1,6 @@
 import React from "react";
 
-const default function Stock({ stock }) {
+export default function Stock({ stock }) {
     return (
         <div className="p-6 flex space-x-2">
             <div className="flex-1">

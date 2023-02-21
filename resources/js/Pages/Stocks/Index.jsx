@@ -1,9 +1,9 @@
 import React from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-
+import Stock from "@/Components/Stocks/Index";
 import { Head } from "@inertiajs/react";
 
-export default function Index({ auth }) {
+export default function Index({ auth, stocks }) {
 
     return (
         <AuthenticatedLayout auth={auth}>
