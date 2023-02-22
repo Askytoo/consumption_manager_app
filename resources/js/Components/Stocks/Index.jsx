@@ -1,16 +1,27 @@
-import React from "react";
+import React, { useMemo } from "react";
+import MaterialReactTable from 'material-react-table';
+export default function Stock ({ stocks }) {
+        const columns = useMemo(
+            () => [
+                {
+                    accessorKey: 'name',
+                    header: 'Item Name' ,
+                },
+                {
+                    accessorKey: 'quantity',
+                    header: 'Quantity',
+                },
+            ],
+            [],
+        );
 
-export default function Stock({ stock }) {
     return (
-        <div className="p-6 flex space-x-2">
-            <div className="flex-1">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <span className="text-gray-800">{stock.name}</span>
-                        <small className="ml-2 text-sm text-gray-600">{stock.quantity}</small>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <MaterialReactTable
+            columns={columns}
+            data={stocks}
+            enablePagination={false}
+            enableRowVirtualization
+        />
     );
 }
+

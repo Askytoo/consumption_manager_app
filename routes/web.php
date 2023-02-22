@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StockController;
+use App\Models\Stock;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -39,5 +40,11 @@ Route::middleware('auth')->group(function () {
 Route::resource('stocks', StockController::class)
     ->only(['index', 'store', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
+
+Route::get('/test', function () {
+    return Inertia::render('test', [
+        'stocks' => Stock::all(),
+    ]);
+});
 
 require __DIR__.'/auth.php';
