@@ -35,7 +35,8 @@ class StockController extends Controller
      */
     public function store(StoreStockRequest $request): RedirectResponse
     {
-        //
+        Auth::user()->stocks()->create($request->validated());
+        return redirect(route('stocks.index'));
     }
 
     /**

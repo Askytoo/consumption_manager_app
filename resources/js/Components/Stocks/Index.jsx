@@ -90,8 +90,8 @@ export default function Stock ({ stocks }) {
         () => [
             {
                 accessorKey: 'category',
-                header: '種類' ,
-                size: '70',
+                header: 'カテゴリー' ,
+                size: '100',
                 muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
                     ...getCommonEditTextFieldProps(cell),
                     required: true,
@@ -107,7 +107,7 @@ export default function Stock ({ stocks }) {
             {
                 accessorKey: 'name',
                 header: '商品名' ,
-                size: '80',
+                size: '120',
                 muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
                     ...getCommonEditTextFieldProps(cell),
                     required: true,
@@ -173,9 +173,8 @@ export default function Stock ({ stocks }) {
                 },
             },
             {
-                accessorKey: 'standard_quantity',
+                accessorKey: 'reglar_quantity',
                 header: '常備数量' ,
-                size: '100',
                 muiTableBodyCellEditTextFieldProps: {
                     required: true,
                     type: 'number',
@@ -204,7 +203,7 @@ export default function Stock ({ stocks }) {
                 enableColumnDragging={false}
                 initialState={{
                     grouping: ['category'],
-                    columnVisibility: {is_regular: false, standard_quantity: false},
+                    columnVisibility: {is_regular: false, reglar_quantity: false},
                     density: 'compact',
                     sorting: [{ id: 'category', desc: false }],
                 }}
@@ -239,7 +238,7 @@ export default function Stock ({ stocks }) {
                         muiTableHeadCellProps: {
                             align: 'center',
                         },
-                        size: 110,
+                        size: 80,
                     },
                 }}
                 onEditingRowSave={handleSaveRowEdits}

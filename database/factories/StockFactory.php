@@ -29,7 +29,7 @@ class StockFactory extends Factory
             'quantity' => 1,
             'unit_name' => '個',
             'is_regular' => false,
-            'standard_quantity' => 0,
+            'regular_quantity' => 0,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
