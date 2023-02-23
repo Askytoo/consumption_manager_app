@@ -25,7 +25,7 @@ class StockFactory extends Factory
             'id' => fake()->uuid(),
             'user_id' => $user_id,
             'name' => fake()->word(),
-            'category' => 1,
+            'category' => mt_rand(1, 5),
             'quantity' => 1,
             'unit_name' => '個',
             'is_regular' => false,

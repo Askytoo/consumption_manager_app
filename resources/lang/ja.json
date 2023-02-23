@@ -41,6 +41,7 @@
     "Close_at":"終了時刻",
     "Place":"場所",
     "Description":"詳細情報",
-    "Please input event description.":"追加で必要な情報があればこちらに入力してください。"
-    
+    "Please input event description.":"追加で必要な情報があればこちらに入力してください。",
+    "Create New Stock":"在庫登録",
+    "Double-Click a Cell to Edit":"ダブルクリックまたはタップで編集"
 }
