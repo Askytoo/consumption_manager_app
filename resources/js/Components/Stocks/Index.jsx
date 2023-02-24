@@ -17,7 +17,7 @@ import {
 import { Delete, Edit } from '@mui/icons-material';
 import { MRT_Localization_JA } from 'material-react-table/locales/ja';
 
-export default function Stock ({ stocks }) {
+export default function Stock ({ stocks, categoryList, isRegularList }) {
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [tableData, setTableData] = useState(() => stocks);
     const [validationErrors, setValidationErrors] = useState({});
@@ -84,7 +84,8 @@ export default function Stock ({ stocks }) {
         },
         [validationErrors],
     );
-    const is_regulars = [true, false];
+
+    const states = ['未設定', '設定'];
 
     const columns = useMemo(
         () => [
@@ -154,17 +155,20 @@ export default function Stock ({ stocks }) {
             {
                 accessorKey: 'is_regular',
                 header: '常備品' ,
-                muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-                    ...getCommonEditTextFieldProps(cell),
-                    required: true,
-                    type: 'bool',
+                muiTableBodyCellEditTextFieldProps: {
+                    // required: true,
                     select: true, //change to select for a dropdown
-                    children: is_regulars.map((is_regular) => (
-                        <MenuItem key={is_regular} value={is_regular}>
-                            {is_regular}
+                    /* children: isRegularList.map((isRegular) => (
+                        <MenuItem key={isRegular} value={isRegular}>
+                            {isRegular}
+                        </MenuItem>
+                    )), */
+                    children: states.map((state) => (
+                        <MenuItem key={state} value={state}>
+                            {state}
                         </MenuItem>
                     )),
-                }),
+                },
                 muiTableHeadCellProps: {
                     align: 'center',
                 },
@@ -193,6 +197,7 @@ export default function Stock ({ stocks }) {
 
     return (
         <>
+        {console.log(categoryList)}
             <MaterialReactTable
                 columns={columns}
                 data={stocks}

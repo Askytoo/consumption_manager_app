@@ -21,6 +21,8 @@ class StockController extends Controller
 
         return Inertia::render('Stocks/Index', [
             'stocks' => $stocks,
+            'categoryList' => array_values(Stock::CATEGORY),
+            'isRegularList' => array_values(Stock::IS_REGULAR),
         ]);
     }
 
