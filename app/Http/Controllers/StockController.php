@@ -38,7 +38,7 @@ class StockController extends Controller
      */
     public function update(UpdateStockRequest $request, Stock $stock): RedirectResponse
     {
-        $stocks->update($request->validated());
+        $stock->update($request->validated());
         return to_route('stocks.index');
     }
 
