@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Stock extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected  $fillable = [
         'name',
@@ -17,7 +18,7 @@ class Stock extends Model
         'quantity',
         'unit_name',
         'is_regular',
-        'stndard_quantity',
+        'regular_quantity',
     ];
 
     /**
@@ -37,23 +38,49 @@ class Stock extends Model
         8 => '贈り物',
     ];
 
+    /**
+     *
+     * is_regularの定義
+     *  @var array
+     */
+    const IS_REGULAR = [
+        0 => '未設定',
+        1 => '設定',
+    ];
+
+    /**
+     * categoryのアクセサとミューテタの実装
+     *
+     * @return Illuminate\Database\Eloquent\Casts\Attribute
+     */
     public function category(): Attribute
     {
         return new Attribute(
             get: function ($value) {
-                if (!isset(self::CATEGORY[$value])) {
-                    return 'その他';
-                }
-                return self::CATEGORY[$value];
+                return self::CATEGORY[$value] ?? 'その他';
             },
 
             set: function ($value) {
-                $key = array_search($value, self::CATEGORY);
-                if (!$key) {
-                    return 0;
-                }
-                return $key;
+                return array_search($value, self::CATEGORY) || 0;
             },
+        );
+    }
+
+    /**
+     * is_regularのアクセサとミューテタの実装
+     *
+     * @return Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    public function isRegular(): Attribute
+    {
+        return new Attribute(
+            get: function ($value) {
+                return self::IS_REGULAR[$value] ?? '未設定';
+            },
+
+            set: function ($value) {
+                return array_search($value, self::IS_REGULAR) || 0;
+            }
         );
     }
      

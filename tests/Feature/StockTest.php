@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Stock;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -58,21 +59,30 @@ class StockTest extends TestCase
         $response = $this->actingAs($user)
             ->withSession(['banned' => false])
             ->post(route('stocks.store'), [
-                'category' => 1,
-                'name' => 'pumpkin',
+                'category' => '食料品',
+                'name' => 'かぼちゃ',
                 'quantity' => 2,
-                'unit_name' => 'pcs',
-            ])
+                'unit_name' => '個',
+                'is_regular' => '設定',
+                'regular_quantity' => 2,
+            ]);
+
+        $response = $this->actingAs($user)
+            ->withSession(['banned' => false])
+            ->get(route('stocks.index'))
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Stocks/Index')
-                ->has('stocks', 1, fn(Assert $page) => $page
-                    ->where('caregory', 1)
-                    ->where('name', 'pumpkin')
-                    ->where('quantity', 1)
-                    ->where('unit_name', 'pcs')
-                    ->where('is_regular', false)    // default is false
-                    ->where('regular_quantity', 0)  // default is 0
-                    ->where('user_id', $user_id)
+                ->has('stocks.0', fn(Assert $page) => $page
+                    ->where('category', '食料品')
+                    ->where('name', 'かぼちゃ')
+                    ->where('quantity', 2)
+                    ->where('unit_name', '個')
+                    ->where('is_regular', '設定')
+                    ->where('regular_quantity', 2)
+                    ->where('user_id', $user->id)
+                    ->has('id')
+                    ->has('created_at')
+                    ->has('updated_at')
                 )
             );
 

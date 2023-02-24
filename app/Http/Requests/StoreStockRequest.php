@@ -23,15 +23,16 @@ class StoreStockRequest extends FormRequest
      */
     public function rules(): array
     {
-        $category_rule = Rule::in(array_keys(Stock::CATEGORY));
+        $category_rule = Rule::in(Stock::CATEGORY);
+        $is_regular_rule = Rule::in(Stock::IS_REGULAR);
 
         return [
-            'name' => 'required|string|max50',
-            'category' => 'required|integer|' . $category_rule,
+            'name' => 'required|string|max:50',
+            'category' => 'required|' . $category_rule,
             'quantity' => 'required|integer|between:0,999',
             'unit_name' => 'nullable|string',
-            'is_regular' => 'required|boolean',
-            'regular_quantity' => 'required|integer|between:0,:999',
+            'is_regular' => 'required|' . $is_regular_rule,
+            'regular_quantity' => 'required|integer|between:0,999',
         ];
     }
 

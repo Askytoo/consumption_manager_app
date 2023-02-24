@@ -17,8 +17,10 @@ class StockController extends Controller
      */
     public function index(): Response
     {
+        $stocks = Auth::user()->stocks()->get(); 
+
         return Inertia::render('Stocks/Index', [
-            'stocks' => Auth::user()->stocks()->get(),
+            'stocks' => $stocks,
         ]);
     }
 
@@ -36,7 +38,7 @@ class StockController extends Controller
     public function store(StoreStockRequest $request): RedirectResponse
     {
         Auth::user()->stocks()->create($request->validated());
-        return redirect(route('stocks.index'));
+        return to_route('stocks.index');
     }
 
     /**
