@@ -52,8 +52,6 @@ class StockTest extends TestCase
      */
     public function test_can_save_stock(): void
     {
-        Schema::disableForeignKeyConstraints();
-
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
@@ -65,7 +63,9 @@ class StockTest extends TestCase
                 'unit_name' => '個',
                 'is_regular' => '設定',
                 'regular_quantity' => 2,
-            ]);
+            ])
+            ->assertStatus(302)
+            ->assertRedirect(route('stocks.index'));
 
         $response = $this->actingAs($user)
             ->withSession(['banned' => false])
@@ -85,7 +85,33 @@ class StockTest extends TestCase
                     ->has('updated_at')
                 )
             );
+    }
 
-        Schema::enableForeignKeyConstraints();
+    /**
+     * Stockの作成の失敗テスト
+     *
+     * @test
+     */
+    public function test_can_not_save_stock(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->withSession(['banned' => false])
+            ->post(route('stocks.store'), [
+                'category' => 'none',   // 選択肢にないデータ
+                'name' => 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',    // 文字数が50以上
+                'quantity' => 1000, // 0~999以外
+                'unit_name' => '個',    // 正常なデータ
+                'is_regular' => 'none', // 選択肢にないデータ
+                'regular_quantity' => -1, // 0~999以外
+            ])
+            ->assertSessionHasErrors([
+            'name' => '商品名は、50文字以下で指定してください。',
+            'category' => '選択されたカテゴリーは正しくありません。',
+            'quantity' => '数量は、0から999の間で指定してください。',
+            'is_regular' => '選択された常備品は正しくありません。',
+            'regular_quantity' => '常備数量は、0から999の間で指定してください。',
+        ]);
     }
 }
