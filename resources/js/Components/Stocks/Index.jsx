@@ -156,18 +156,19 @@ export default function Stock ({ stocks, categoryList, isRegularList }) {
                 accessorKey: 'is_regular',
                 header: '常備品' ,
                 muiTableBodyCellEditTextFieldProps: {
-                    // required: true,
+                    required: true,
                     select: true, //change to select for a dropdown
                     /* children: isRegularList.map((isRegular) => (
                         <MenuItem key={isRegular} value={isRegular}>
                             {isRegular}
                         </MenuItem>
                     )), */
-                    children: states.map((state) => (
-                        <MenuItem key={state} value={state}>
-                            {state}
-                        </MenuItem>
-                    )),
+                    children: 
+                    <>
+                        <MenuItem>1</MenuItem>
+                        <MenuItem>2</MenuItem>
+                    </>
+                    ,
                 },
                 muiTableHeadCellProps: {
                     align: 'center',
@@ -197,7 +198,6 @@ export default function Stock ({ stocks, categoryList, isRegularList }) {
 
     return (
         <>
-        {console.log(categoryList)}
             <MaterialReactTable
                 columns={columns}
                 data={stocks}

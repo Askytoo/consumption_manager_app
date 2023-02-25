@@ -37,7 +37,7 @@ class StockPolicy
      */
     public function update(User $user, Stock $stock): bool
     {
-        //
+        return $stock->user()->is($user);
     }
 
     /**
@@ -45,7 +45,7 @@ class StockPolicy
      */
     public function delete(User $user, Stock $stock): bool
     {
-        //
+        return $this->update($user, $stock);
     }
 
     /**

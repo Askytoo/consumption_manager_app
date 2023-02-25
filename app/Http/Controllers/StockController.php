@@ -40,6 +40,7 @@ class StockController extends Controller
      */
     public function update(UpdateStockRequest $request, Stock $stock): RedirectResponse
     {
+        $this->authorize('update', $stock);
         $stock->update($request->validated());
         return to_route('stocks.index');
     }
@@ -49,6 +50,10 @@ class StockController extends Controller
      */
     public function destroy(Stock $stock): RedirectResponse
     {
-        //
+        $this->authorize('delete', $stock);
+
+        $stock->delete();
+
+        return to_route('stocks.index');
     }
 }

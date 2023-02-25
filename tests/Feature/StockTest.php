@@ -88,11 +88,11 @@ class StockTest extends TestCase
     }
 
     /**
-     * Stockの作成の失敗テスト
+     * 不正データによるStockの作成の失敗テスト
      *
      * @test
      */
-    public function test_can_not_save_stock(): void
+    public function test_can_not_save_stock_by_validation(): void
     {
         $user = User::factory()->create();
 
@@ -162,11 +162,11 @@ class StockTest extends TestCase
     }
 
     /**
-     * Stockの更新の失敗テスト
+     * 入力データの不備によるStockの更新の失敗テスト
      *
      * @test
      */
-    public function test_can_not_update_stock(): void
+    public function test_can_not_update_stock_by_validation(): void
     {
         $user = User::factory()->create();
 
@@ -191,5 +191,74 @@ class StockTest extends TestCase
             'is_regular' => '選択された常備品は正しくありません。',
             'regular_quantity' => '常備数量は、0から999の間で指定してください。',
         ]);
+    }
+
+    /**
+     * 非承認によるStockの更新の失敗テスト
+     *
+     * @test
+     */
+    public function test_can_not_update_stock_by_authorization(): void
+    {
+        $user = User::factory()->create();
+
+        $stock = Stock::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        $anotherUser = User::factory()->create();
+
+        $response = $this->actingAs($anotherUser)
+            ->withSession(['banned' => false])
+            ->patch(route('stocks.update', ['stock' => $stock->id]), [
+                'category' => '食料品',
+                'name' => 'かぼちゃ',
+                'quantity' => 2,
+                'unit_name' => '個',
+                'is_regular' => '設定',
+                'regular_quantity' => 2,
+            ])
+            ->assertStatus(403);
+    }
+
+    /**
+     * Stockの削除の成功テスト
+     *
+     * @test
+     */
+    public function test_can_delete_stock(): void
+    {
+        $user = User::factory()->create();
+
+        $stock = Stock::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->withSession(['banned' => false])
+            ->delete(route('stocks.destroy', ['stock' => $stock->id]))
+            ->assertStatus(302)
+            ->assertRedirect(route('stocks.index'));
+    }
+
+    /**
+     * 非認証によるStockの削除の失敗テスト
+     *
+     * @test
+     */
+    public function test_can_not_delete_stock_by_authorization(): void
+    {
+        $user = User::factory()->create();
+
+        $stock = Stock::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        $anotherUser = User::factory()->create();
+
+        $response = $this->actingAs($anotherUser)
+            ->withSession(['banned' => false])
+            ->delete(route('stocks.destroy', ['stock' => $stock->id]))
+            ->assertStatus(403);
     }
 }
