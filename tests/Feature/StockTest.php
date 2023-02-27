@@ -239,6 +239,14 @@ class StockTest extends TestCase
             ->delete(route('stocks.destroy', ['stock' => $stock->id]))
             ->assertStatus(302)
             ->assertRedirect(route('stocks.index'));
+
+        $response = $this->actingAs($user)
+            ->withSession(['banned' => false])
+            ->get(route('stocks.index'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Stocks/Index')
+                ->has('stocks', 0)
+            );
     }
 
     /**

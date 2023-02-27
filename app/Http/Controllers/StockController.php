@@ -20,10 +20,10 @@ class StockController extends Controller
         $stocks = Auth::user()->stocks()->get(); 
 
         return Inertia::render('Stocks/Index', [
-            'stocks' => $stocks,
+            'stocks' => fn() => $stocks,
             'categoryList' => array_values(Stock::CATEGORY),
             'isRegularList' => array_values(Stock::IS_REGULAR),
-        ]);
+        ])->with('message', 'index');
     }
 
     /**
@@ -54,6 +54,6 @@ class StockController extends Controller
 
         $stock->delete();
 
-        return to_route('stocks.index');
+        return to_route('stocks.index')->with('message', '削除');
     }
 }

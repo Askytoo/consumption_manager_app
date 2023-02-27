@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { MRT_Localization_JA } from 'material-react-table/locales/ja';
+import { router, usePage } from '@inertiajs/react';
 
 export default function Stock ({ stocks, categoryList, isRegularList }) {
     const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -31,6 +32,7 @@ export default function Stock ({ stocks, categoryList, isRegularList }) {
         if (!Object.keys(validationErrors).length) {
             tableData[row.index] = values;
             //send/receive api updates here, then refetch or update local table data for re-render
+            router.patch(route('stocks.update', {stock: row.getValue('id')}), values);
             setTableData([...tableData]);
             exitEditingMode(); //required to exit editing mode and close modal
         }
@@ -40,19 +42,19 @@ export default function Stock ({ stocks, categoryList, isRegularList }) {
         setValidationErrors({});
     };
 
-    const handleDeleteRow = useCallback(
-        (row) => {
-            if (
-                !confirm(`Are you sure you want to delete ${row.getValue('firstName')}`)
-            ) {
-                return;
-            }
-            //send api delete request here, then refetch or update local table data for re-render
-            tableData.splice(row.index, 1);
-            setTableData([...tableData]);
-        },
-        [tableData],
-    );
+    const handleDeleteRow = (row) => {
+        //send api delete request here, then refetch or update local table data for re-render
+        router.visit(route('stocks.destroy', {stock: row.getValue('id')}), {
+            method: 'delete',
+            replace: true,
+            preserveState: true,
+            preserveScroll: true,
+            only: ['stocks', 'flash'],
+            onBefore: () => confirm(`${row.getValue('name')}を削除しますか？`),
+            // onSuccess: (page) => console.log(page.props.flash.message),
+            onSuccess: (page) => confirm(`${page.props.flash.message}に成功しました。`),
+        });
+};
 
     const getCommonEditTextFieldProps = useCallback(
         (cell) => {
@@ -89,6 +91,14 @@ export default function Stock ({ stocks, categoryList, isRegularList }) {
 
     const columns = useMemo(
         () => [
+            {
+                accessorKey: 'id',
+                header: 'ID',
+                enableColumnOrdering: false,
+                enableEditing: false, //disable editing on this column
+                enableSorting: false,
+                enableGlobalFilter: false,
+            },
             {
                 accessorKey: 'category',
                 header: 'カテゴリー' ,
@@ -208,7 +218,7 @@ export default function Stock ({ stocks, categoryList, isRegularList }) {
                 enableColumnDragging={false}
                 initialState={{
                     grouping: ['category'],
-                    columnVisibility: {is_regular: false, reglar_quantity: false},
+                    columnVisibility: {id: false, is_regular: false, reglar_quantity: false},
                     density: 'compact',
                     sorting: [{ id: 'category', desc: false }],
                 }}
@@ -255,6 +265,13 @@ export default function Stock ({ stocks, categoryList, isRegularList }) {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
+                        {/* <Tooltip arrow placement="right" title="Delete">
+                            <Link href={route('stocks.destroy', {stock: row.getValue('id')})} method="delete">
+                                <IconButton color="error">
+                                    <Delete />
+                                </IconButton>
+                            </Link>
+                        </Tooltip> */}
                         <Tooltip arrow placement="right" title="Delete">
                             <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                 <Delete />

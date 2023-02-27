@@ -41,10 +41,4 @@ Route::resource('stocks', StockController::class)
     ->only(['index', 'store', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
 
-Route::get('/test', function () {
-    return Inertia::render('test', [
-        'stocks' => Stock::all(),
-    ]);
-});
-
 require __DIR__.'/auth.php';
