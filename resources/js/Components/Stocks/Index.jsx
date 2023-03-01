@@ -26,13 +26,9 @@ import { useForm, usePage } from "@inertiajs/react";
 
 export default function Stock ({ stocks }) {
     const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false);
     const [tableData, setTableData] = useState(() => stocks);
     const [validationErrors, setValidationErrors] = useState({});
-
-    const handleCreateNewRow = (values) => {
-        tableData.push(values);
-        setTableData([...tableData]);
-    };
 
     const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
         if (!Object.keys(validationErrors).length) {
@@ -286,17 +282,15 @@ export default function Stock ({ stocks }) {
                 )}
             />
             <CreateNewStockModal
-                columns={columns}
                 open={createModalOpen}
                 onClose={() => setCreateModalOpen(false)}
-                onSubmit={handleCreateNewRow}
             />
         </>
     );
 };
 
 /* Creating a mui dialog modal for creating new rows */
-export const CreateNewStockModal = ({ open, columns, onClose, onSubmit }) => {
+export const CreateNewStockModal = ({ open, onClose }) => {
     const handleSubmit = (e) => {
         //put your validation logic here
         e.preventDefault();
@@ -361,7 +355,7 @@ export const CreateNewStockModal = ({ open, columns, onClose, onSubmit }) => {
                     </div>
 
                     <div>
-                        <InputLabel forInput="name" value={ __('Name') } />
+                        <InputLabel forInput="name" value={ __('Stock Name') } />
 
                         <TextInput
                             id="name"
@@ -396,7 +390,7 @@ export const CreateNewStockModal = ({ open, columns, onClose, onSubmit }) => {
                     </div>
 
                     <div>
-                        <InputLabel forInput="unit_name" value={ __('Unit_name') } />
+                        <InputLabel forInput="unit_name" value={ __('Unit Name') } />
 
                         <TextInput
                             id="unit_name"
@@ -413,7 +407,7 @@ export const CreateNewStockModal = ({ open, columns, onClose, onSubmit }) => {
                     </div>
 
                     <div>
-                        <InputLabel forInput="is_regular" value={ __('Is_regular') } />
+                        <InputLabel forInput="is_regular" value={ __('Is Regular') } />
 
                         <SelectInput
                             id="is_regular"
@@ -430,7 +424,7 @@ export const CreateNewStockModal = ({ open, columns, onClose, onSubmit }) => {
                     </div>
 
                     <div>
-                        <InputLabel forInput="regular_quantity" value={ __('Regular_quantity') } />
+                        <InputLabel forInput="regular_quantity" value={ __('Regular Quantity') } />
 
                         <TextInput
                             id="regular_quantity"

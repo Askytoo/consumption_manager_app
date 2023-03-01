@@ -43,5 +43,11 @@
     "Description":"詳細情報",
     "Please input event description.":"追加で必要な情報があればこちらに入力してください。",
     "Create New Stock":"在庫登録",
+    "Category":"カテゴリー",
+    "Stock Name":"在庫名",
+    "Quantity":"数量",
+    "Unit Name":"単位名",
+    "Is Regular":"常備品の設定",
+    "Regular Quantity":"常備数量",
     "Double-Click a Cell to Edit":"ダブルクリックまたはタップで編集"
 }
