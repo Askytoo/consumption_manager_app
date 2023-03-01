@@ -16,9 +16,15 @@ import {
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { MRT_Localization_JA } from 'material-react-table/locales/ja';
-import { router, usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
+// import Form from '@/Components/Stocks/Form';
+import InputLabel from '@/Components/InputLabel';
+import TextInput from '@/Components/TextInput';
+import SelectInput from '@/Components/SelectInput';
+import InputError from '@/Components/InputError';
+import { useForm, usePage } from "@inertiajs/react";
 
-export default function Stock ({ stocks, categoryList, isRegularList }) {
+export default function Stock ({ stocks }) {
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [tableData, setTableData] = useState(() => stocks);
     const [validationErrors, setValidationErrors] = useState({});
@@ -51,10 +57,9 @@ export default function Stock ({ stocks, categoryList, isRegularList }) {
             preserveScroll: true,
             only: ['stocks', 'flash'],
             onBefore: () => confirm(`${row.getValue('name')}を削除しますか？`),
-            // onSuccess: (page) => console.log(page.props.flash.message),
             onSuccess: (page) => confirm(`${page.props.flash.message}に成功しました。`),
         });
-};
+    };
 
     const getCommonEditTextFieldProps = useCallback(
         (cell) => {
@@ -86,8 +91,6 @@ export default function Stock ({ stocks, categoryList, isRegularList }) {
         },
         [validationErrors],
     );
-
-    const states = ['未設定', '設定'];
 
     const columns = useMemo(
         () => [
@@ -265,13 +268,6 @@ export default function Stock ({ stocks, categoryList, isRegularList }) {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        {/* <Tooltip arrow placement="right" title="Delete">
-                            <Link href={route('stocks.destroy', {stock: row.getValue('id')})} method="delete">
-                                <IconButton color="error">
-                                    <Delete />
-                                </IconButton>
-                            </Link>
-                        </Tooltip> */}
                         <Tooltip arrow placement="right" title="Delete">
                             <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                 <Delete />
@@ -301,25 +297,45 @@ export default function Stock ({ stocks, categoryList, isRegularList }) {
 
 /* Creating a mui dialog modal for creating new rows */
 export const CreateNewStockModal = ({ open, columns, onClose, onSubmit }) => {
-    const [values, setValues] = useState(() =>
-        columns.reduce((acc, column) => {
-            acc[column.accessorKey ?? ''] = '';
-            return acc;
-        }, {}),
-    );
-
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
         //put your validation logic here
-        onSubmit(values);
-        onClose();
+        e.preventDefault();
+        post(route('stocks.store'), {
+            data: data,
+            replace: true,
+            preserveScroll: true,
+            only: ['stocks', 'flash', 'errors'],
+            onSuccess: (page) => {
+                confirm(`${page.props.flash.message}に成功しました。`),
+                reset(),
+                onClose()
+            }
+        });
     };
+
+    const { data, setData, post, errors, clearErrors, reset } = useForm({
+        category: '食料品',
+        name: '',
+        quantity: '',
+        unit_name: '',
+        is_regular: '未設定',
+        regular_quantity: '0',
+    });
+
+    const onHandleChange = (e) => {
+        setData(e.target.name, e.target.type === 'checkbox' ? e.target.checked : e.target.value);
+    };
+
+    const categories = usePage().props.categories;
+    const regularOptions = usePage().props.regularOptions;
+
 
     /* Dialog */
     return (
         <Dialog open={open}>
             <DialogTitle textAlign="center">{ __('Create New Stock') }</DialogTitle>
-            <DialogContent>
-                <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={handleSubmit}>
+                <DialogContent>
                     <Stack
                         sx={{
                             width: '100%',
@@ -327,25 +343,117 @@ export const CreateNewStockModal = ({ open, columns, onClose, onSubmit }) => {
                             gap: '1.5rem',
                         }}
                     >
-                        {columns.map((column) => (
-                            <TextField
-                                key={column.accessorKey}
-                                label={column.header}
-                                name={column.accessorKey}
-                                onChange={(e) =>
-                                    setValues({ ...values, [e.target.name]: e.target.value })
-                                }
+                    <div>
+                        <InputLabel forInput="category" value={ __('Category') } />
+
+                        <SelectInput
+                            id="category"
+                            name="category"
+                            value={data.category}
+                            className="mt-1 block w-full"
+                            autoComplete="category"
+                            handleChange={onHandleChange}
+                            options={categories}
+                            required
                             />
-                    ))}
+
+                        <InputError message={errors.category} className="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel forInput="name" value={ __('Name') } />
+
+                        <TextInput
+                            id="name"
+                            type="text"
+                            name="name"
+                            value={data.name}
+                            className="mt-1 block w-full"
+                            autoComplete="name"
+                            isFocused={true}
+                            handleChange={onHandleChange}
+                            required
+                            />
+
+                        <InputError message={errors.title} className="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel forInput="quantity" value={ __('Quantity') } />
+
+                        <TextInput
+                            id="quantity"
+                            type="number"
+                            name="quantity"
+                            value={data.quantity}
+                            className="mt-1 block w-full"
+                            autoComplete="quantity"
+                            handleChange={onHandleChange}
+                            required
+                            />
+
+                        <InputError message={errors.quantity} className="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel forInput="unit_name" value={ __('Unit_name') } />
+
+                        <TextInput
+                            id="unit_name"
+                            type="text"
+                            name="unit_name"
+                            value={data.unit_name}
+                            className="mt-1 block w-full"
+                            autoComplete="unit_name"
+                            handleChange={onHandleChange}
+                            required
+                            />
+
+                        <InputError message={errors.unit_name} className="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel forInput="is_regular" value={ __('Is_regular') } />
+
+                        <SelectInput
+                            id="is_regular"
+                            name="is_regular"
+                            value={data.is_regular}
+                            className="mt-1 block w-full"
+                            autoComplete="is_regular"
+                            handleChange={onHandleChange}
+                            options={regularOptions}
+                            required
+                            />
+
+                        <InputError message={errors.is_regular} className="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel forInput="regular_quantity" value={ __('Regular_quantity') } />
+
+                        <TextInput
+                            id="regular_quantity"
+                            type="number"
+                            name="regular_quantity"
+                            value={data.regular_quantity}
+                            className="mt-1 block w-full"
+                            autoComplete="regular_quantity"
+                            handleChange={onHandleChange}
+                            required
+                        />
+
+                        <InputError message={errors.regular_quantity} className="mt-2" />
+                    </div>
                     </Stack>
+                    </DialogContent>
+                    <DialogActions sx={{ p: '1.25rem' }}>
+                        <Button onClick={() => {onClose(); reset(); clearErrors()}}>{ __('Cancel') }</Button>
+                        <Button color="primary" type="submit" variant="contained">
+                            { __('Save') }
+                        </Button>
+                    </DialogActions>
                 </form>
-            </DialogContent>
-            <DialogActions sx={{ p: '1.25rem' }}>
-                <Button onClick={onClose}>{ __('Cancel') }</Button>
-                <Button color="primary" onClick={handleSubmit} variant="contained">
-                    { __('Save') }
-                </Button>
-            </DialogActions>
         </Dialog>
     );
 };

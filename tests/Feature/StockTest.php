@@ -57,8 +57,8 @@ class StockTest extends TestCase
         $response = $this->actingAs($user)
             ->withSession(['banned' => false])
             ->post(route('stocks.store'), [
-                'category' => '食料品',
-                'name' => 'かぼちゃ',
+                'category' => 'トイレ用品',
+                'name' => 'トイレクイックル',
                 'quantity' => 2,
                 'unit_name' => '個',
                 'is_regular' => '設定',
@@ -73,8 +73,8 @@ class StockTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Stocks/Index')
                 ->has('stocks.0', fn(Assert $page) => $page
-                    ->where('category', '食料品')
-                    ->where('name', 'かぼちゃ')
+                    ->where('category', 'トイレ用品')
+                    ->where('name', 'トイレクイックル')
                     ->where('quantity', 2)
                     ->where('unit_name', '個')
                     ->where('is_regular', '設定')

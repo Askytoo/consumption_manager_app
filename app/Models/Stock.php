@@ -27,7 +27,6 @@ class Stock extends Model
      * @var array  
      */
     const CATEGORY = [
-        0 => 'その他',
         1 => '食料品',
         2 => '台所用品',
         3 => 'トイレ用品',
@@ -37,6 +36,7 @@ class Stock extends Model
         7 => '催事用品',
         8 => '雑貨',
         9 => '贈り物',
+        0 => 'その他',
     ];
 
     /**
@@ -62,7 +62,7 @@ class Stock extends Model
             },
 
             set: function ($value) {
-                return array_search($value, self::CATEGORY) || 0;
+                return array_search($value, self::CATEGORY) ?: 0;
             },
         );
     }

@@ -21,8 +21,8 @@ class StockController extends Controller
 
         return Inertia::render('Stocks/Index', [
             'stocks' => fn() => $stocks,
-            'categoryList' => array_values(Stock::CATEGORY),
-            'isRegularList' => array_values(Stock::IS_REGULAR),
+            'categories' => array_values(Stock::CATEGORY),
+            'regularOptions' => array_values(Stock::IS_REGULAR),
         ])->with('message', 'index');
     }
 
@@ -32,7 +32,7 @@ class StockController extends Controller
     public function store(StoreStockRequest $request): RedirectResponse
     {
         Auth::user()->stocks()->create($request->validated());
-        return to_route('stocks.index');
+        return to_route('stocks.index')->with('message', '登録');
     }
 
     /**
