@@ -3,33 +3,34 @@ import {
     Dialog,
     DialogTitle,
 } from '@mui/material';
-// import Form from '@/Components/Stocks/Form';
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import Form from './Form';
 
-export default function CreateModal  ({ open, onClose }) {
-    const { data, setData, post, errors, clearErrors, reset } = useForm({
-        category: '食料品',
-        name: '',
-        quantity: '',
-        unit_name: '',
-        is_regular: '未設定',
-        regular_quantity: '0',
+/* Creating a mui dialog modal for editing rows */
+export default function EditModal ({ open, onClose, targetStockData }) {
+    const { data, setData, put, errors, clearErrors, reset } = useForm({
+        category: targetStockData?.category || '',
+        name: targetStockData?.name || '',
+        quantity: targetStockData?.quantity || 0,
+        unit_name: targetStockData?.unit_name || '',
+        is_regular: targetStockData?.is_regular || '',
+        regular_quantity: targetStockData?.regular_quantity || 0,
     });
 
     const handleSubmit = (e) => {
         //put your validation logic here
         e.preventDefault();
-        post(route('stocks.store'), {
+        put(route('stocks.update', {stock: targetStockData?.id}), {
             data: data,
             replace: true,
             preserveScroll: true,
             only: ['stocks', 'flash', 'errors'],
+            onError: (errors) => console.log(errors),
             onSuccess: (page) => {
                 confirm(`${page.props.flash.message}に成功しました。`),
                 reset(),
                 onClose()
-            }
+            },
         });
     };
 
@@ -37,10 +38,9 @@ export default function CreateModal  ({ open, onClose }) {
         setData(e.target.name, e.target.type === 'checkbox' ? e.target.checked : e.target.value);
     };
 
-    /* Dialog */
     return (
         <Dialog open={open}>
-            <DialogTitle textAlign="center">{ __('Create New Stock') }</DialogTitle>
+            <DialogTitle textAlign="center">{ __('Edit Stock') }</DialogTitle>
             <Form
                 data={data}
                 errors={errors}
