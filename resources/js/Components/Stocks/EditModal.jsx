@@ -9,11 +9,11 @@ import Form from './Form';
 /* Creating a mui dialog modal for editing rows */
 export default function EditModal ({ open, onClose, targetStockData }) {
     const { data, setData, put, errors, clearErrors, reset } = useForm({
-        category: targetStockData?.category || '',
+        category: targetStockData?.category || '食料品',
         name: targetStockData?.name || '',
         quantity: targetStockData?.quantity || 0,
         unit_name: targetStockData?.unit_name || '',
-        is_regular: targetStockData?.is_regular || '',
+        is_regular: targetStockData?.is_regular || '未設定',
         regular_quantity: targetStockData?.regular_quantity || 0,
     });
 

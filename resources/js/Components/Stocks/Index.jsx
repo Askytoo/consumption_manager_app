@@ -19,9 +19,8 @@ export default function Stock ({ stocks }) {
     const [editingData, setEditingData] = useState(null);
 
     const handleEditRow = (targetStockData) => {
-        setEditModalOpen(true);
         setEditingData(targetStockData);
-        console.log(editingData);
+        setEditModalOpen(true);
     }
 
     const handleDeleteRow = (targetStockData) => {
@@ -181,6 +180,7 @@ export default function Stock ({ stocks }) {
                 onClose={() => setCreateModalOpen(false)}
             />
             <EditModal
+                key={JSON.stringify(editingData)}
                 open={editModalOpen}
                 targetStockData={editingData}
                 onClose={() => setEditModalOpen(false)}

@@ -42,7 +42,7 @@ class StockController extends Controller
     {
         $this->authorize('update', $stock);
         $stock->update($request->validated());
-        return to_route('stocks.index');
+        return to_route('stocks.index')->with('message', '編集');
     }
 
     /**

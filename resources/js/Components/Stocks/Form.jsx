@@ -13,7 +13,6 @@ import InputError from '@/Components/InputError';
 import {usePage} from '@inertiajs/react';
 
 export default function Form ({ data, errors, clearErrors, reset, handleSubmit, onHandleChange, onClose }) {
-
     const categories = usePage().props.categories;
     const regularOptions = usePage().props.regularOptions;
 
@@ -59,7 +58,7 @@ export default function Form ({ data, errors, clearErrors, reset, handleSubmit, 
                         required
                         />
 
-                    <InputError message={errors.title} className="mt-2" />
+                    <InputError message={errors.name} className="mt-2" />
                 </div>
 
                 <div>
