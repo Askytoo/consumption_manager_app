@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateStockRequest;
 use App\Models\Stock;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,6 +19,8 @@ class StockController extends Controller
     public function index(): Response
     {
         $stocks = Auth::user()->stocks()->get(); 
+
+        Log::info('User is accessing all his STOCKS', ['user' => Auth::user()->id]);
 
         return Inertia::render('Stocks/Index', [
             'stocks' => fn() => $stocks,
@@ -31,8 +34,14 @@ class StockController extends Controller
      */
     public function store(StoreStockRequest $request): RedirectResponse
     {
-        Auth::user()->stocks()->create($request->validated());
-        return to_route('stocks.index')->with('message', '登録');
+        Log::info('User is trying to CREATE new STOCK', ['user' => Auth::user()->id]);
+
+        if(Auth::user()->stocks()->create($request->validated())) {
+            Log::info('User CREATE new STOCK successfully', ['user' => Auth::user()->id, 'data' => $request->validated()]);
+            return to_route('stocks.index')->with('message', '登録');
+        }
+        Log::warning('User could not CREATE a STOCK caused by invalid stock data', ['user' => Auth::user()->id, 'data' => $request->validated()]);
+        return to_route('stocks.index');
     }
 
     /**
@@ -41,8 +50,15 @@ class StockController extends Controller
     public function update(UpdateStockRequest $request, Stock $stock): RedirectResponse
     {
         $this->authorize('update', $stock);
-        $stock->update($request->validated());
-        return to_route('stocks.index')->with('message', '編集');
+        
+        Log::info('User is trying to UPDATE STOCK', ['user' => Auth::user()->id, 'stock' => $stock->id]);
+
+        if ($stock->update($request->validated())) {
+            Log::info('User UPDATE STOCK successfully', ['user' => Auth::user()->id, 'stock' => $request->validated()]);
+            return to_route('stocks.index')->with('message', '編集');
+        }
+        Log::warning('User could not UPDATE a STOCK caused by invalid stock data', ['user' => Auth::user()->id, 'data' => $request->validated()]);
+        return to_route('stocks.index');
     }
 
     /**
@@ -52,8 +68,14 @@ class StockController extends Controller
     {
         $this->authorize('delete', $stock);
 
-        $stock->delete();
+        Log::info('User is trying to DELETE STOCK', ['user' => Auth::user()->id, 'stock' => $stock->id]);
 
-        return to_route('stocks.index')->with('message', '削除');
+        if ($stock->delete()) {
+            Log::info('User UPDATE STOCK successfully', ['user' => Auth::user()->id, 'stock' => $stock->id]);
+            return to_route('stocks.index')->with('message', '削除');
+        }
+        Log::warning('User could not DELETE a STOCK caused by invalid', ['user' => Auth::user()->id, 'data' => $stock->id]);
+        return to_route('stocks.index');
+
     }
 }
