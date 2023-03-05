@@ -1,6 +1,6 @@
 import React from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import Stock from "@/Components/Stocks/Index";
+import Stock from "@/Components/Stocks/Table";
 import { Head } from "@inertiajs/react";
 
 export default function Index({ auth, stocks, categories, regularOptions }) {

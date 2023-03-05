@@ -3,8 +3,8 @@ import MaterialReactTable from 'material-react-table';
 import {
     Box,
     Button,
-    IconButton,
-    Tooltip,
+    ListItemIcon,
+    MenuItem
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { MRT_Localization_JA } from 'material-react-table/locales/ja';
@@ -116,6 +116,7 @@ export default function Stock ({ stocks }) {
                 enableRowVirtualization
                 /* Grooping */
                 enableGrouping
+                enableRowActions
                 enableColumnDragging={false}
                 initialState={{
                     grouping: ['category'],
@@ -128,9 +129,6 @@ export default function Stock ({ stocks }) {
                 enableColumnFilters={false}
                 enableHiding={false}
                 positionToolbarAlertBanner='none'
-                /* Editing */
-                enableEditing
-                editingMode="modal"
                 /* Stripe */
                 muiTableBodyProps={{
                     sx: {
@@ -148,23 +146,35 @@ export default function Stock ({ stocks }) {
                         muiTableHeadCellProps: {
                             align: 'center',
                         },
-                        size: 80,
                     },
                 }}
-                renderRowActions={({ row }) => (
-                    <Box sx={{ display: 'flex', gap: '1rem' }}>
-                        <Tooltip arrow placement="left" title="Edit">
-                            <IconButton onClick={() => handleEditRow(row.original)}>
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip arrow placement="right" title="Delete">
-                            <IconButton color="error" onClick={() => handleDeleteRow(row.original)}>
-                                <Delete />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                )}
+                positionActionsColumn={'last'}
+                renderRowActionMenuItems={({ row, closeMenu }) => [
+                    <MenuItem
+                        key={0}
+                        onClick={() => {
+                            handleEditRow(row.original);
+                            closeMenu();
+                        }}
+                    >
+                        <ListItemIcon>
+                            <Edit />
+                        </ListItemIcon>
+                        { __('Edit') }
+                    </MenuItem>,
+                    <MenuItem
+                        key={1}
+                        onClick={() => {
+                            handleDeleteRow(row.original);
+                            closeMenu();
+                        }}
+                    >
+                        <ListItemIcon>
+                            <Delete />
+                        </ListItemIcon>
+                        { __('Delete') }
+                    </MenuItem>,
+                ]}
                 renderTopToolbarCustomActions={() => (
                     <Button
                         color="primary"
